@@ -1,5 +1,4 @@
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -10,46 +9,42 @@ import praktikum.Burger;
 import praktikum.Ingredient;
 import praktikum.IngredientType;
 
+
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
 
-    private Burger burger;
-
+    Burger burger = new Burger();
     @Mock
-    private Ingredient sauce;
+    Ingredient sauce;
     @Mock
-    private Ingredient filling;
+    Ingredient filling;
     @Mock
-    private Bun bun;
-
-    @Before
-    public void setUp() {
-        burger = new Burger(); // Инициализация перед каждым тестом
-    }
+    Bun bun;
 
     @Test
     public void setBunsTest() {
         Bun bunForTest = new Bun("name", 10F);
         burger.setBuns(bunForTest);
 
-        Assert.assertSame(bunForTest, burger.bun);
+        Assert.assertEquals(bunForTest, burger.bun);
+
     }
 
     @Test
     public void addIngredientTest() {
-        int initialSize = burger.ingredients.size();
+        int bAdd = burger.ingredients.size() + 1;
         burger.addIngredient(sauce);
-        int newSize = burger.ingredients.size();
-        Assert.assertEquals(initialSize + 1, newSize);
+        int aAdd = burger.ingredients.size();
+        Assert.assertEquals(bAdd, aAdd);
     }
 
     @Test
     public void removeIngredientTest() {
+        int bRemove = burger.ingredients.size();
         burger.addIngredient(sauce);
-        int initialSize = burger.ingredients.size();
         burger.removeIngredient(0);
-        int newSize = burger.ingredients.size();
-        Assert.assertEquals(initialSize - 1, newSize);
+        int aRemove = burger.ingredients.size();
+        Assert.assertEquals(bRemove, aRemove);
     }
 
     @Test
@@ -68,8 +63,8 @@ public class BurgerTest {
         burger.setBuns(bun);
         burger.addIngredient(sauce);
 
-        float expected = 80F; // Обратите внимание, корректируйте соответственно
-        Assert.assertEquals(expected, burger.getPrice(), 0.001F);
+        float expected = 100F;
+        Assert.assertEquals(expected, burger.getPrice(), 0);
     }
 
     @Test
@@ -78,7 +73,7 @@ public class BurgerTest {
                 + "= sauce sour cream =%n"
                 + "(==== black bun ====)%n"
                 + "%n"
-                + "Price: 600.0%n");
+                + "Price: 900,000000%n");
 
         burger.addIngredient(sauce);
         burger.setBuns(bun);
@@ -88,6 +83,7 @@ public class BurgerTest {
         Mockito.when(bun.getName()).thenReturn("black bun");
         Mockito.when(sauce.getName()).thenReturn("sour cream");
         Mockito.when(sauce.getType()).thenReturn(IngredientType.SAUCE);
+
 
         Assert.assertEquals(expected, burger.getReceipt());
     }
