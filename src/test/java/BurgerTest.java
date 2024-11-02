@@ -14,115 +14,93 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
-    private Burger burger;
 
+    private Burger burger;
 
     @Mock
     private Bun mockBun;
+
     @Mock
     private Ingredient mockCheese;
+
     @Mock
     private Ingredient mockCutlet;
+
     @Mock
     private Ingredient mockSauce;
 
-    //Создание нового бургера
+    // Создание нового бургера
     @Before
     public void createNewBurger() {
         burger = new Burger();
     }
 
-    //Тест на проверку добавления булочек в бургер
+    // Тест на проверку добавления булочек в бургер
     @Test
     public void setBunsTest() {
-
         burger.setBuns(mockBun);
         Bun actualBun = burger.bun;
-        assertEquals(mockBun, actualBun);
-
-        System.out.println("Ожидаем добавление булочки: " + mockBun);
-        System.out.println("Фактически добавлена булочка: " + actualBun);
+        assertEquals("Ожидаем добавление булочки", mockBun, actualBun);
     }
 
-    //Тест на проверку добавления одного ингридиента
+    // Тест на проверку добавления одного ингредиента
     @Test
     public void addOneIngredientTest() {
-
         burger.addIngredient(mockCutlet);
-        assertEquals(1, burger.ingredients.size());
-        assertEquals(mockCutlet, burger.ingredients.get(0));
-
-        System.out.println("Ожидаем 1 ингредиент, фактически добавлено: " + burger.ingredients.size());
-        System.out.println("В бургер добавлен: " + burger.ingredients.get(0));
-
+        assertEquals("Ожидаем, что в бургер будет 1 ингредиент", 1, burger.ingredients.size());
+        assertEquals("Первый ингредиент должен быть cutlet", mockCutlet, burger.ingredients.get(0));
     }
 
-    //Тест на проверку добавления двух ингридиентов
+    // Тест на проверку добавления двух ингредиентов
     @Test
     public void addTwoIngredientTest() {
-
         burger.addIngredient(mockCutlet);
         burger.addIngredient(mockCheese);
-        assertEquals(2, burger.ingredients.size());
-        assertEquals(mockCutlet, burger.ingredients.get(0));
-        assertEquals(mockCheese, burger.ingredients.get(1));
-
-        System.out.println("Ожидаем 2 ингредиента, фактически добавлено: " + burger.ingredients.size());
-        System.out.println("В бургер добавлены: " + burger.ingredients.get(0) +", " + burger.ingredients.get(1));
-
+        assertEquals("Ожидаем, что в бургер будет 2 ингредиента", 2, burger.ingredients.size());
+        assertEquals("Первый ингредиент должен быть cutlet", mockCutlet, burger.ingredients.get(0));
+        assertEquals("Второй ингредиент должен быть cheese", mockCheese, burger.ingredients.get(1));
     }
 
-    //Тест на удаление ингридиента
+    // Тест на удаление ингредиента
     @Test
     public void removeIngredientTest() {
-
         burger.addIngredient(mockCutlet);
-        System.out.println("В бургер добавлен один ингредиент, итого ингредиентов: " + burger.ingredients.size());
         burger.removeIngredient(0);
-        assertEquals(0, burger.ingredients.size());
-        System.out.println("Удалили ингредиент из бургера, итого ингредиентов: " + burger.ingredients.size());
+        assertEquals("Ожидаем, что после удаления ингредиента, ингредиентов будет 0", 0, burger.ingredients.size());
     }
 
-    //Тест на перемещение ингридиентов
+    // Тест на перемещение ингредиентов
     @Test
     public void moveIngredient() {
-
         burger.addIngredient(mockCutlet);
         burger.addIngredient(mockSauce);
-
-        System.out.println("Первый ингридиент: " + burger.ingredients.get(0) + ", второй ингридиент: "+ burger.ingredients.get(1));
-
         burger.moveIngredient(0, 1);
-        assertEquals(mockSauce, burger.ingredients.get(0));
-        assertEquals(mockCutlet, burger.ingredients.get(1));
-
+        assertEquals("Первый ингредиент должен быть sauce", mockSauce, burger.ingredients.get(0));
+        assertEquals("Второй ингредиент должен быть cutlet", mockCutlet, burger.ingredients.get(1));
     }
 
-    //Тест на получение стоимости бургера, 2 булочки + 2 ингридиента. Используем мокито и явно указываем стоимость каждого ингридиента
+    // Тест на получение стоимости бургера, 2 булочки + 2 ингредиента
     @Test
     public void getPriceTest() {
-
         burger.setBuns(mockBun);
         Mockito.when(mockBun.getPrice()).thenReturn(20.0f);
         burger.addIngredient(mockCheese);
         Mockito.when(mockCheese.getPrice()).thenReturn(25.0f);
         burger.addIngredient(mockCutlet);
-        Mockito.when( mockCutlet.getPrice()).thenReturn(30.0f);
+        Mockito.when(mockCutlet.getPrice()).thenReturn(30.0f);
 
-        float expectedPrice = mockBun.getPrice() * 2 + mockCheese.getPrice() +mockCutlet.getPrice();
+        float expectedPrice = mockBun.getPrice() * 2 + mockCheese.getPrice() + mockCutlet.getPrice();
         float actualPrice = burger.getPrice();
 
-        assertEquals("Неверный расчет стоимости бургера", expectedPrice, actualPrice, 0);
-
-        System.out.println("Ожидаемая стоимость бургера: "+ expectedPrice + " руб., фактическая стоимость: " + actualPrice + " руб.");
+        assertEquals("Неверный расчет стоимости бургера", expectedPrice, actualPrice, 0.001); // Убедитесь, что дельта соответствует вашим требованиям
     }
-    //Тест метода формирования чека. Используем мокито и явно указываем аргументы ингридиентов бургера
+
+    // Тест метода формирования чека
     @Test
     public void getReceipt() {
         burger.setBuns(mockBun);
         Mockito.when(mockBun.getPrice()).thenReturn(20.0f);
         Mockito.when(mockBun.getName()).thenReturn("CosmoBurger");
-
         burger.addIngredient(mockCutlet);
         Mockito.when(mockCutlet.getName()).thenReturn("steak");
         Mockito.when(mockCutlet.getType()).thenReturn(IngredientType.FILLING);
@@ -147,7 +125,5 @@ public class BurgerTest {
         String actualReceipt = burger.getReceipt();
 
         Assert.assertEquals("Некорректный формат чека", expectedReceipt, actualReceipt);
-        System.out.println("Ожидаемый формат чека: \n " + expectedReceipt + "\n Фактический формат чека: \n " + actualReceipt);
     }
-
 }
